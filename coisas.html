@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - O Cortiço</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background-color: #c2b7b74f;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('pexels-jahoo-clouseau-1260324-1.jpg'); 
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        #quiz-container {
+            background-color: rgba(156, 148, 148, 0.678); /* Opacidade baixa para o quadro */
+            width: 80%;
+            max-width: 500px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgb(0, 0, 0);
+        }
+        h1 {
+            font-size: 24px;
+            color: #000000;
+            opacity: 5; /* Opacidade alta para o texto */
+        }
+        .question {
+            font-size: 25px;
+            margin-bottom: 20px;
+            opacity: 5; /* Opacidade alta para o texto */
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .option {
+            margin: 10px 0;
+            opacity: 1; /* Opacidade alta para o texto */
+        }
+        #result {
+            font-weight: bold;
+            margin-top: 15px;
+            opacity: 1; /* Opacidade alta para o texto */
+        }
+        /* Classe para a imagem oculta */
+        .hidden-image {
+            display: none;
+            max-width: 100%;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="quiz-container" class="font">
+        <h1>Quiz - O Cortiço</h1>
+        <div class="question" id="question"></div>
+        <div class="options" id="options">
+            <label class="option"><input type="radio" name="answer" value="a"> a) Carpinteiro</label>
+            <label class="option"><input type="radio" name="answer" value="b"> b) Lavrador</label>
+            <label class="option"><input type="radio" name="answer" value="c"> c) Comerciante</label>
+            <label class="option"><input type="radio" name="answer" value="d"> d) Soldado</label>
+        </div>
+        <button onclick="checkAnswer()" class="font">Responder</button>
+        <div id="result"></div>
+        <!-- Imagens ocultas que serão exibidas -->
+        <img src="Você acertou!!!!!.png" alt="Imagem Acertou" class="hidden-image" id="correct-image">
+        <img src="voceerrou.png" alt="Imagem Errou" class="hidden-image" id="wrong-image">
+        <!-- Áudio para acerto e erro -->
+        <audio id="audio-correct">
+            <source src="audio.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-erro">
+            <source src="audioerro.mp3" type="audio/mpeg">
+        </audio>
+        <!-- Botão para prosseguir -->
+        <button onclick="nextQuestion()" id="next-button" style="display: none;" class="font">Próxima Pergunta</button>
+    </div>
+
+    <script class="font">
+        const questions = [
+            {
+                question: "Qual é a ocupação de João Romão no início do livro?",
+                answers: {
+                    a: "Carpinteiro",
+                    b: "Lavrador",
+                    c: "Comerciante",
+                    d: "Soldado"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "Qual é o nome da mulher com quem Jerônimo se envolve, causando conflitos no cortiço?",
+                answers: {
+                    a: "Rita Baiana",
+                    b: "Zulmira",
+                    c: "Piedade",
+                    d: "Bertoleza"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "Qual é o nome do médico que representa a visão científica do naturalismo na história?",
+                answers: {
+                    a: "Dr. Miranda",
+                    b: "Dr. Bacamarte",
+                    c: "Dr. Camargo",
+                    d: "Dr. Juvenal"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "O que João Romão deseja alcançar ao investir em propriedades no cortiço?",
+                answers: {
+                    a: "Fama",
+                    b: "Riqueza",
+                    c: "Poder político",
+                    d: "Status social"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "Qual é o destino final de Rita Baiana na história?",
+                answers: {
+                    a: "Ela se torna uma empresária bem-sucedida",
+                    b: "Volta a viver no cortiço de São Romão",
+                    c: "Ela foge com Jerônimo para o exterior",
+                    d: "Ela se torna a líder do cortiço"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "Quem é a filha de Jerônimo e Piedade?",
+                answers: {
+                    a: "Senhorinha",
+                    b: "Leocádia",
+                    c: "Zulmira",
+                    d: "Rita Baiana"
+                },
+                correctAnswer: "a"
+            },
+            {
+                question: "Qual é o personagem que representa o cientificismo na obra, acreditando que pode 'melhorar' a raça humana?",
+                answers: {
+                    a: "Bertoleza",
+                    b: "Jerônimo",
+                    c: "Rita Baiana",
+                    d: "O Barão de Itaguaí"
+                },
+                correctAnswer: "d"
+            },
+            {
+                question: "O que simboliza o incêndio que ocorre no cortiço?",
+                answers: {
+                    a: "A purificação do local",
+                    b: "O renascimento da esperança",
+                    c: "A destruição e a purificação ",
+                    d: "O triunfo da prosperidade"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "Qual é o papel de Firmo e ele representa oque na trama?",
+                answers: {
+                    a: "Dono do cortiço",
+                    b: "Capataz de João Romão e representa a luta entre classes sociais",
+                    c: "Marido de Bertoleza",
+                    d: "Amigo de Jerônimo"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "Qual é a crítica social mais evidente feita pelo autor por meio da obra?",
+                answers: {
+                    a: "A opressão da igreja",
+                    b: "A exploração dos imigrantes",
+                    c: "A falta de valores familiares",
+                    d: "exploração, desigualdade social e preconceito racial"
+                },
+                correctAnswer: "d"
+            },
+            // Novas questões adicionadas
+            {
+                question: "Qual é a principal característica do movimento literário 'Naturalismo'?",
+                answers: {
+                    a: "Enfoque na idealização da realidade",
+                    b: "Ênfase na crítica social e no determinismo biológico",
+                    c: "Foco na exaltação do indivíduo e do romantismo",
+                    d: "Exploração da religiosidade e do misticismo"
+                },
+                correctAnswer: "b"
+            },
+            {
+                question: "O que é 'O Cortiço', na obra, do ponto de vista do enredo?",
+                answers: {
+                    a: "Um bairro nobre",
+                    b: "Uma fábrica",
+                    c: "Um cortiço, habitação coletiva e precária",
+                    d: "Uma escola"
+                },
+                correctAnswer: "c"
+            },
+            {
+                question: "Quem é o autor da obra 'O Cortiço'?",
+                answers: {
+                    a: "Machado de Assis",
+                    b: "José de Alencar",
+                    c: "Eça de Queirós",
+                    d: "Aluísio Azevedo"
+                },
+                correctAnswer: "d"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function displayQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+            const resultElement = document.getElementById("result");
+            const correctImage = document.getElementById("correct-image");
+            const wrongImage = document.getElementById("wrong-image");
+            const nextButton = document.getElementById("next-button");
+            const audioCorrect = document.getElementById("audio-correct");
+            const audioWrong = document.getElementById("audio-erro");
+
+            if (currentQuestion < questions.length) {
+                const question = questions[currentQuestion];
+
+                questionElement.textContent = question.question;
+
+                const answers = question.answers;
+                const optionsHTML = Object.keys(answers).map((key) => {
+                    return `<label class="option"><input type="radio" name="answer" value="${key}"> ${answers[key]}</label>`;
+                });
+
+                optionsElement.innerHTML = optionsHTML.join("");
+
+                // Ocultar elementos de resultado e imagens
+                resultElement.textContent = "";
+                correctImage.style.display = "none";
+                wrongImage.style.display = "none";
+                nextButton.style.display = "none";
+            } else {
+                // Exibição de resultado final
+                questionElement.textContent = "Quiz Concluído!";
+                optionsElement.innerHTML = "";
+                resultElement.textContent = `Pontuação: ${score} de ${questions.length}`;
+                nextButton.style.display = "none"; // Ocultar o botão "Próxima Pergunta"
+            }
+        }
+
+        function checkAnswer() {
+            const selectedOption = document.querySelector("input[name='answer']:checked");
+            if (!selectedOption) {
+                alert("Por favor, selecione uma resposta.");
+                return;
+            }
+
+            const answer = selectedOption.value;
+            const question = questions[currentQuestion];
+
+            if (answer === question.correctAnswer) {
+                score++;
+                // Exibir a imagem de acerto
+                const correctImage = document.getElementById("correct-image");
+                correctImage.style.display = "block";
+                const audioCorrect = document.getElementById("audio-correct");
+        audioCorrect.src = "audio.mp3"; // Defina o caminho correto do arquivo de áudio aqui
+        audioCorrect.play();
+
+            } else {
+                // Exibir a imagem de erro
+                const wrongImage = document.getElementById("wrong-image");
+                wrongImage.style.display = "block";
+                // Reproduzir o som de erro
+                const audioCorrect = document.getElementById("audio-erro");
+        audioCorrect.src = "audioerro.mp3"; // Defina o caminho correto do arquivo de áudio aqui
+        audioCorrect.play();
+            }
+
+            // Exibir a mensagem de resultado
+            const resultElement = document.getElementById("result");
+            resultElement.textContent = answer === question.correctAnswer ? "" : "";
+            
+            // Exibir o botão "Próxima Pergunta"
+            const nextButton = document.getElementById("next-button");
+            nextButton.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            displayQuestion();
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>
